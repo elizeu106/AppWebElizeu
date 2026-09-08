@@ -1,4 +1,7 @@
 ﻿@page "/processos"
+@using appwebElizeu.Model
+@using appwebElizeu.DAO
+@inject ProcessoDAO ProcessoDAO
 
 <PageTitle> Processos - Sistema de Controle de Processos</PageTitle>
 
@@ -41,4 +44,10 @@
 
 @code {
 
+	private List<Processos> processos = new();
+
+	protected override void OnInitialized()
+	{
+		processos = ProcessoDAO.Listar();
+	}
 }

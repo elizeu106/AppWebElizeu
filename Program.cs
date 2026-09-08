@@ -1,3 +1,6 @@
+using appwebElizeu.Configs;
+using appwebElizeu.DAO;
+
 using appwebElizeu.Components;
 
 namespace appwebElizeu
@@ -11,6 +14,9 @@ namespace appwebElizeu
             // Add services to the container.
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
+
+            builder.Services.AddScoped<Conexao>();
+            builder.Services.AddScoped<ProcessoDAO>();
 
             var app = builder.Build();
 
