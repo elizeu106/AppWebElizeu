@@ -25,14 +25,18 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr>
-					<td>22</td>
-					<td>084726</td>
-					<td> Elizeu Neves</td>
-					<td>Solicitação de Ligação de energia</td>
-					<td>Aberto</td>
-					<td>Informatica</td>
-				</tr>
+				
+				@foreach (var processo in processos)
+				{
+					<tr>
+						<td>@processo.Id</td>
+						<td>@processo.Numero</td>
+						<td>@processo.Interessado</td>
+						<td>@processo.Assunto</td>
+						<td>@processo.Situacao</td>
+						<td></td>
+					</tr>
+				}
 			</tbody>
 
 		</table>
