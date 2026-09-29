@@ -1,11 +1,22 @@
-﻿using appwebElizeu.Configs;
+﻿using System.Diagnostics;
+using appwebElizeu.Configs;
 using appwebElizeu.Model;
+using System;
 using MySql.Data.MySqlClient;
 
 namespace appwebElizeu.DAO
 {
     public class ProcessoDAO
     {
+        public static DateOnly? GetDateOnly(MySqlDataReader reader, string columnName)
+        {
+            DateOnly? value = null;
+            if (!reader.IsDBNull(reader.GetOrdinal(columnName)))
+                value = DateOnly.FromDateTime(reader.GetDateTime(columnName));
+
+            return value;
+        }
+
         private readonly Conexao _conexao;
 
         public ProcessoDAO(Conexao conexao)
@@ -44,7 +55,7 @@ namespace appwebElizeu.DAO
                     "numero_pro"
                 ),
 
-                Data = DAOHelper.GetDateTime(
+                Data = GetDateOnly(
                     leitor,
                     "data_pro"
                 ),
@@ -69,6 +80,38 @@ namespace appwebElizeu.DAO
                     "situacao_pro"
                 )
             };
+        }
+
+        public void Inserir(Processos processo)
+        {
+            try
+            {
+                using var con = _conexao.GetConnection();
+
+                string sql = @"INSERT INTO processos
+                    (numero_pro, data_pro, interessado_pro,
+                     assunto_pro, descricao_pro, situacao_pro)
+                    VALUES
+                    (@numero, @data, @interessado,
+                     @assunto, @descricao, @situacao)";
+
+                using var comando = con.CreateCommand();
+
+                comando.CommandText = sql;
+
+                comando.Parameters.AddWithValue("@numero", processo.Numero);
+                comando.Parameters.AddWithValue("@data", processo.Data!.Value.ToDateTime(TimeOnly.MinValue));
+                comando.Parameters.AddWithValue("@interessado", processo.Interessado);
+                comando.Parameters.AddWithValue("@assunto", processo.Assunto);
+                comando.Parameters.AddWithValue("@descricao", processo.Descricao);
+                comando.Parameters.AddWithValue("@situacao", processo.Situacao);
+
+                comando.ExecuteNonQuery();
+            }
+            catch
+            {
+                throw;
+            }
         }
     }
 }
